@@ -20,7 +20,7 @@
       <config-file target="AndroidManifest.xml" parent="/*">
          <uses-permission android:name="android.permission.BLUETOOTH" />
       </config-file>
-	  <source-file src="src/android/com/apache/cordova/plugins/zebra/ZebraLink.java" target-dir="src/android/com/apache/cordova/plugins/zebra/" />
+	  <source-file src="src/android/com/apache/cordova/plugins/zebra/ZebraLink.java" target-dir="src/com/apache/cordova/plugins/zebra/" />
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="ZebraLink">

@@ -50,8 +50,6 @@ cordova.plugins.zebralink.swipe(success(){},fail(error){},options={timeout: 2000
 cordova plugin add https://github.com/tblanchard/zebralink.git
 ```
 
-###Very important!
-
 
 ##ZPL - Zebra Programming Language
 For more information about ZPL please see the  [PDF Official Manual](https://support.zebra.com/cpws/docs/zpl/zpl_manual.pdf)

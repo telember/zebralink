@@ -107,18 +107,18 @@ ZebraLink.prototype.print = function(success,fail,options)
 
 
 
-ZebraLink.prototype.swipe = function(success,fail,options) 
+ZebraLink.prototype.swipe = function(success,fail,options)
 {
-    if (!fail) { fail = function() {}}
+    if (!fail) { fail = function() {};}
 
     if (typeof fail != "function")  {
-        console.log("ZebraLink.currentPrinter failure: failure parameter not a function")
-        return
+        console.log("ZebraLink.currentPrinter failure: failure parameter not a function");
+        return;
     }
 
     if (typeof success != "function") {
-        fail("success callback parameter must be a function")
-        return
+        fail("success callback parameter must be a function");
+        return;
     }
 
 	if(!options) { options = {} };

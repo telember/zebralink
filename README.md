@@ -37,6 +37,8 @@ cordova.plugins.zebralink.disconnect(success(){},fail(error){});
 ```
 
 ###Print
+Expects a template and optionally a formValues dictionary of values to substitute into the template. Template variables look like @variable@.
+
 ```
 cordova.plugins.zebralink.print(success(){},fail(error){},options{template: "^XA^FO10,10^AFN,26,13^FD@message@^FS^XZ" formValues: {message: "Hello, World!"}});
 ```

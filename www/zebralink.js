@@ -57,18 +57,18 @@ ZebraLink.prototype.connect = function(success, fail, options) {
 		this.pgclass(), "connect", [options]);
 };
 
-ZebraLink.prototype.reconnect - function(success,fail,options)
+ZebraLink.prototype.reconnect = function(success,fail,options)
 {
 	console.log("ZebraLink.prototype.disconnect");
 
-    if (!fail) { fail = function(error) { console.log('ZebraLink.reconnect failed: ' + error) }}
+    if (!fail) { fail = function(error) { console.log('ZebraLink.reconnect failed: ' + error);};}
 
-	if(!success) { success = function() {} }
+	if(!success) { success = function() {}; }
 	
 	if(!options) { options = {}; }
 	
 	return cordova.exec(success, fail, this.pgclass(), "connect", [options]);
-}
+};
 
 ZebraLink.prototype.disconnect = function(success, fail, options)
 {
@@ -84,7 +84,7 @@ ZebraLink.prototype.disconnect = function(success, fail, options)
 	setTimeout(function(){success();},500);
 	
 	return cordova.exec(function(){}, fail, this.pgclass(), "disconnect", [options]);
-}
+};
 
 ZebraLink.prototype.print = function(success,fail,options) 
 {
@@ -103,7 +103,7 @@ ZebraLink.prototype.print = function(success,fail,options)
     return cordova.exec(success,fail,
 		this.pgclass(), "print", [options])
 	
-}
+};
 
 
 
@@ -127,7 +127,7 @@ ZebraLink.prototype.swipe = function(success,fail,options)
     return cordova.exec(success,fail,
 		this.pgclass(), "swipe", [options])
 	
-}
+};
 
 
 ZebraLink.prototype.watchPrinter = function(watchFunc)
@@ -139,7 +139,7 @@ ZebraLink.prototype.watchPrinter = function(watchFunc)
 	}
 	var ident = 'watch'+this._watchIds++;
 	this._watchers[ident] = watchFunc;
-}
+};
 
 ZebraLink.prototype.cancelPrinterWatch = function(identifier)
 {
@@ -147,7 +147,7 @@ ZebraLink.prototype.cancelPrinterWatch = function(identifier)
 	{
 		this._watchers.identifier = null;
 	}
-}
+};
 
 ZebraLink.prototype.setPrinterStatus = function(status)
 {
@@ -162,7 +162,7 @@ ZebraLink.prototype.setPrinterStatus = function(status)
 			}
 		}
 	}
-}
+};
 
 ZebraLink.prototype.check = function(success,fail)
 {
@@ -178,7 +178,7 @@ ZebraLink.prototype.check = function(success,fail)
 	
 	return cordova.exec(success,fail,
 		this.pgclass(), "check", []);
-}
+};
 
 //-------------------------------------------------------------------
 

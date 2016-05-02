@@ -1,10 +1,23 @@
-# zbtprinter
-A Cordova/Phonegap driver for Zebra bluetooth printers
+# zebralink
+A Cordova/Phonegap plugin for Zebra bluetooth printers
 
 ##Usage
 You can send data in ZPL Zebra Programing Language:
 
+###Discover
 ```
+cordova.plugins.zebralink.discover = function(
+	success(printers)
+	{
+
+	}, 
+	fail(error)
+	{
+		alert('Discover failed ' + JSON.stringify(error));
+	}, 
+	options={range: "172.20.10.*"});
+
+
 cordova.plugins.zebralink.print("^XA^FO10,10^AFN,26,13^FDHello, World!^FS^XZ",
     function(success) { 
         alert("Print ok"); 
@@ -13,6 +26,21 @@ cordova.plugins.zebralink.print("^XA^FO10,10^AFN,26,13^FDHello, World!^FS^XZ",
     }
 );
 ```
+###Connect
+```
+cordova.plugins.zebralink.connect(success(){},fail(error){},options = {printer: printer});
+```
+
+###Disconnect
+```
+cordova.plugins.zebralink.disconnect(success(){},fail(error){});
+```
+
+###Print
+```
+cordova.plugins.zebralink.print(success(){},fail(error){},options{template: "^XA^FO10,10^AFN,26,13^FD@message@^FS^XZ" formValues: {message: "Hello, World!"}});
+```
+
 
 ##Install
 ###Cordova

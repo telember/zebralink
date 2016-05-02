@@ -4,12 +4,13 @@ A Cordova/Phonegap plugin for Zebra bluetooth printers
 ##Usage
 You can send data in ZPL Zebra Programing Language:
 
-###Discover
+###Discover Printers
+Search for Zebra bluetooth printer devices.  
 ```
 cordova.plugins.zebralink.discover = function(
 	success(printers)
 	{
-
+		alert('Found Printers: ' + JSON.stringify(printers));
 	}, 
 	fail(error)
 	{
@@ -18,13 +19,6 @@ cordova.plugins.zebralink.discover = function(
 	options={range: "172.20.10.*"});
 
 
-cordova.plugins.zebralink.print("^XA^FO10,10^AFN,26,13^FDHello, World!^FS^XZ",
-    function(success) { 
-        alert("Print ok"); 
-    }, function(fail) { 
-        alert(fail); 
-    }
-);
 ```
 ###Connect
 ```

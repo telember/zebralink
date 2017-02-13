@@ -527,7 +527,7 @@ public class ZebraLink extends CordovaPlugin {
 
 			synchronized(ZebraLink.lock)
 			{
-				ZebraLink.printerConnection.write(template.getBytes());
+				ZebraLink.printerConnection.write(convertExtendedAscii(template));
 			}
 			cid.success("Success");
 		}

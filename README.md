@@ -1,6 +1,6 @@
 # zebralink
 A Cordova/Phonegap plugin for Zebra bluetooth printers
-### original form https://github.com/tblanchard/zebralink
+### original from https://github.com/tblanchard/zebralink
 
 ## Install
 ### Ionic2

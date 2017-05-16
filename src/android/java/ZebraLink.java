@@ -1,4 +1,4 @@
-package com.apache.cordova.plugins.zebra;
+package org.apache.cordova.plugin.zebra;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import android.util.Log;
+import java.util.HashMap; 
+
 public class ZebraLink extends CordovaPlugin {
 
 	String TAG_STR = "ZebraLink";
@@ -48,6 +50,33 @@ public class ZebraLink extends CordovaPlugin {
 		}
 	}
 
+	public enum Actions {
+		DISCOVER("discover"),
+		CONNECT("connect"),
+        DISCONNECT("disconnect"),
+        SWIPE("swipe"),
+		PRINT("print"),
+		CHECK("check"),
+		TEST("test");
+
+		private static final Map<String, Actions> lookup = new HashMap<String, Actions>();
+ 
+    	static { 
+        	for (Actions d : Actions.values()) {
+            	lookup.put(d.text, d);
+        	} 
+    	} 
+
+        private final String text;
+
+        private Actions(final String text) {
+            this.text = text;
+        }
+		public static Actions getByValue(String text) {
+        	return lookup.get(text);
+    	} 
+	}
+
 	static String lastPrinterStatus;
 	static JSONArray lastDiscoveredPrinters;
 	static BluetoothConnection printerConnection;
@@ -55,12 +84,9 @@ public class ZebraLink extends CordovaPlugin {
 
 	static final String lock = "ZebraLinkLock";
 
-	static final String DISCOVER = "discover";
-	static final String CONNECT = "connect";
-	static final String DISCONNECT = "disconnect";
-	static final String SWIPE = "swipe";
-	static final String PRINT = "print";
-	static final String CHECK = "check";
+
+	
+
 
 	@Override
 	public boolean execute(String action, JSONArray inargs, CallbackContext cid) throws JSONException {
@@ -69,128 +95,157 @@ public class ZebraLink extends CordovaPlugin {
 		PluginResult async = new PluginResult(PluginResult.Status.NO_RESULT, "");
 		async.setKeepCallback(true);
 
-		if (action.equals(DISCONNECT)) // run synchronously
-		{
-			try {
-				this.disconnect(inargs, cid);
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
-			cid.sendPluginResult(async);
-			return true;
+		switch (Actions.getByValue(action)){
+			case DISCONNECT: 
+				try {
+					this.disconnect(inargs, cid);
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+				cid.sendPluginResult(async);
+				return true;
+			
+
+			case DISCOVER:
+				class Discover implements Runnable {
+					ZebraLink z;
+					JSONArray arguments;
+					CallbackContext callbackId;
+
+					public Discover(ZebraLink z, JSONArray args, CallbackContext cbid) {
+						this.z = z;
+						this.arguments = args;
+						this.callbackId = cbid;
+					}
+
+					public void run() {
+						/*Looper.prepare();*/ z.discover(this.arguments, this.callbackId);
+						/*Looper.myLooper().quit();*/ }
+
+				}
+
+				cid.sendPluginResult(async);
+				try {
+					new Discover(this, inargs, cid).run();
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+				return true;
+				
+			
+			case CONNECT:
+				class Connect implements Runnable {
+					ZebraLink z;
+					JSONArray arguments;
+					CallbackContext callbackId;
+
+					public Connect(ZebraLink z, JSONArray args, CallbackContext cbid) {
+						this.z = z;
+						this.arguments = args;
+						this.callbackId = cbid;
+					}
+
+					public void run() {
+						/* Looper.prepare(); */ z.connect(this.arguments, this.callbackId);
+						/* Looper.myLooper().quit(); */ }
+
+				}
+				new Connect(this, inargs, cid).run();
+				cid.sendPluginResult(async);
+				return true;
+
+			case TEST:
+				class Test implements Runnable {
+					ZebraLink z;
+					JSONArray arguments;
+					CallbackContext callbackId;
+
+					public Test(ZebraLink z, JSONArray args, CallbackContext cbid) {
+						this.z = z;
+						this.arguments = args;
+						this.callbackId = cbid;
+					}
+
+					public void run() {
+						test(this.arguments, this.callbackId);
+					 }
+
+				}
+				new Test(this, inargs, cid).run();
+				cid.sendPluginResult(async);
+				return true;
+
+
+			case SWIPE:
+				class Swipe implements Runnable {
+					ZebraLink z;
+					JSONArray arguments;
+					CallbackContext callbackId;
+
+					public Swipe(ZebraLink z, JSONArray args, CallbackContext cbid) {
+						this.z = z;
+						this.arguments = args;
+						this.callbackId = cbid;
+					}
+
+					public void run() {
+						z.swipe(this.arguments, this.callbackId);
+					}
+				}
+				cid.sendPluginResult(async);
+				new Swipe(this, inargs, cid).run();
+				return true;
+				
+
+			case PRINT:
+				class Print implements Runnable {
+					ZebraLink z;
+					JSONArray arguments;
+					CallbackContext callbackId;
+
+					public Print(ZebraLink z, JSONArray args, CallbackContext cbid) {
+						this.z = z;
+						this.arguments = args;
+						this.callbackId = cbid;
+					}
+
+					public void run() {
+						z.print(this.arguments, this.callbackId);
+					}
+				}
+				cid.sendPluginResult(async);
+				new Print(this, inargs, cid).run();
+				return true;
+				
+			
+			case CHECK:
+				class Check implements Runnable {
+					ZebraLink z;
+					JSONArray arguments;
+					CallbackContext callbackId;
+
+					public Check(ZebraLink z, JSONArray args, CallbackContext cbid) {
+						this.z = z;
+						this.arguments = args;
+						this.callbackId = cbid;
+					}
+
+					public void run() {
+						z.check(this.arguments, this.callbackId);
+					}
+				}
+
+				cid.sendPluginResult(async);
+				new Check(this, inargs, cid).run();
+				return true;
+				
+
+			default:
+				return false;
+				
+			
 		}
 
-		if (action.equals(DISCOVER)) {
-			class Discover implements Runnable {
-				ZebraLink z;
-				JSONArray arguments;
-				CallbackContext callbackId;
-
-				public Discover(ZebraLink z, JSONArray args, CallbackContext cbid) {
-					this.z = z;
-					this.arguments = args;
-					this.callbackId = cbid;
-				}
-
-				public void run() {
-					/*Looper.prepare();*/ z.discover(this.arguments, this.callbackId);
-					/*Looper.myLooper().quit();*/ }
-
-			}
-
-			cid.sendPluginResult(async);
-			try {
-				new Discover(this, inargs, cid).run();
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
-			return true;
-		}
-
-		if (action.equals(CONNECT)) {
-			class Connect implements Runnable {
-				ZebraLink z;
-				JSONArray arguments;
-				CallbackContext callbackId;
-
-				public Connect(ZebraLink z, JSONArray args, CallbackContext cbid) {
-					this.z = z;
-					this.arguments = args;
-					this.callbackId = cbid;
-				}
-
-				public void run() {
-					/* Looper.prepare(); */ z.connect(this.arguments, this.callbackId);
-					/* Looper.myLooper().quit(); */ }
-
-			}
-			new Connect(this, inargs, cid).run();
-			cid.sendPluginResult(async);
-			return true;
-		}
-		if (action.equals(SWIPE)) {
-			class Swipe implements Runnable {
-				ZebraLink z;
-				JSONArray arguments;
-				CallbackContext callbackId;
-
-				public Swipe(ZebraLink z, JSONArray args, CallbackContext cbid) {
-					this.z = z;
-					this.arguments = args;
-					this.callbackId = cbid;
-				}
-
-				public void run() {
-					z.swipe(this.arguments, this.callbackId);
-				}
-			}
-			cid.sendPluginResult(async);
-			new Swipe(this, inargs, cid).run();
-			return true;
-		}
-		if (action.equals(PRINT)) {
-			class Print implements Runnable {
-				ZebraLink z;
-				JSONArray arguments;
-				CallbackContext callbackId;
-
-				public Print(ZebraLink z, JSONArray args, CallbackContext cbid) {
-					this.z = z;
-					this.arguments = args;
-					this.callbackId = cbid;
-				}
-
-				public void run() {
-					z.print(this.arguments, this.callbackId);
-				}
-			}
-			cid.sendPluginResult(async);
-			new Print(this, inargs, cid).run();
-			return true;
-		}
-		if (action.equals(CHECK)) {
-			class Check implements Runnable {
-				ZebraLink z;
-				JSONArray arguments;
-				CallbackContext callbackId;
-
-				public Check(ZebraLink z, JSONArray args, CallbackContext cbid) {
-					this.z = z;
-					this.arguments = args;
-					this.callbackId = cbid;
-				}
-
-				public void run() {
-					z.check(this.arguments, this.callbackId);
-				}
-			}
-
-			cid.sendPluginResult(async);
-			new Check(this, inargs, cid).run();
-			return true;
-		}
-
-		return false;
 	}
 
 	public void check(JSONArray arguments, CallbackContext cid) {
@@ -496,13 +551,20 @@ public class ZebraLink extends CordovaPlugin {
 	}
 
 	public void test(JSONArray arguments, CallbackContext cid) {
+		// This example prints "This is a CPCL test." near the top of the label.
+        String cpclData = "! 0 200 200 210 1\r\n"
+                             + "TEXT 4 0 10 40 Printer is connected\r\n"
+                             + "FORM\r\n"
+                             + "PRINT\r\n";
+
 		try {
 			JSONObject argDict = arguments.getJSONObject(0);
 			String macAdd = argDict.getString("address");
 			BluetoothConnection myConn = new BluetoothConnectionInsecure(macAdd);
 			myConn.open();
+			myConn.write(cpclData.getBytes());
 			ZebraPrinter myPrinter = ZebraPrinterFactory.getInstance(myConn);
-			myPrinter.printConfigurationLabel();
+			//myPrinter.printConfigurationLabel();
 			myConn.close();
 			cid.success("Success");
 		} catch (Exception ex) {

@@ -12,7 +12,7 @@ ionic plugin add https://github.com/telember/zebralink.git
 ## Usage
 You can send data in ZPL Zebra Programing Language:
 
-### simple
+### example
 ```
 declare var ZebraLink: any
 

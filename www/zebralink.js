@@ -133,7 +133,7 @@ var ZebraLink = {
     }
 
 
-    if (platform() !== 'droid') {
+    if (this.platform() !== 'droid') {
       alert('Print: ' + JSON.stringify(options));
       setTimeout(success, 400);
     } else {

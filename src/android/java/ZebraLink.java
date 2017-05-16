@@ -1,4 +1,4 @@
-package org.apache.cordova.plugin.zebra;
+package cordova.plugin.zebra;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothClass;
@@ -526,11 +526,15 @@ public class ZebraLink extends CordovaPlugin {
 				}
 			}
 
-			//	printerIsConnectedAndReady();
-
+			//printerIsConnectedAndReady();
+			
 			JSONObject argDict = arguments.getJSONObject(0);
 			template = argDict.getString("template");
 			values = argDict.getJSONObject("formValues");
+
+			Log.d(TAG_STR,"template >> "+ template);
+			Log.d(TAG_STR,"values >> "+ values);
+
 
 			for (Iterator<String> it = values.keys(); it.hasNext();) {
 				String k = it.next();
@@ -541,7 +545,8 @@ public class ZebraLink extends CordovaPlugin {
 			template = template.replaceAll("\n", "\r\n").replaceAll("\r\r", "\r");
 
 			synchronized (ZebraLink.lock) {
-				ZebraLink.printerConnection.write(convertExtendedAscii(template));
+				Log.d(TAG_STR,"ZebraLink.lock" + template);
+				ZebraLink.printerConnection.write(template.getBytes());
 			}
 			cid.success("Success");
 		} catch (Exception ex) {
@@ -551,22 +556,17 @@ public class ZebraLink extends CordovaPlugin {
 	}
 
 	public void test(JSONArray arguments, CallbackContext cid) {
-		// This example prints "This is a CPCL test." near the top of the label.
-        String cpclData = "! 0 200 200 210 1\r\n"
-                             + "TEXT 4 0 10 40 Printer is connected\r\n"
-                             + "FORM\r\n"
-                             + "PRINT\r\n";
-
 		try {
 			JSONObject argDict = arguments.getJSONObject(0);
 			String macAdd = argDict.getString("address");
+			String message = argDict.getString("message");
 			BluetoothConnection myConn = new BluetoothConnectionInsecure(macAdd);
 			myConn.open();
-			myConn.write(cpclData.getBytes());
+			myConn.write(message.getBytes());
 			ZebraPrinter myPrinter = ZebraPrinterFactory.getInstance(myConn);
 			//myPrinter.printConfigurationLabel();
 			myConn.close();
-			cid.success("Success");
+			cid.success("test Success");
 		} catch (Exception ex) {
 			cid.error(ex.getLocalizedMessage());
 		}

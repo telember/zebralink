@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><plugin xmlns="http://www.phonegap.com/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    id="cordova-plugin-zebra"
+    id="cordova-plugin-zebralink"
     version="1.0">
 
     <name>ZebraLink</name>
@@ -22,7 +22,6 @@
          <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
       </config-file>
 	  <source-file src="src/android/java/ZebraLink.java" target-dir="src/cordova/plugin/zebra/" />
-
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="ZebraLink">
                 <param name="android-package" value="cordova.plugin.zebra.ZebraLink" />

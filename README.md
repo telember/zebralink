@@ -1,13 +1,43 @@
 # zebralink
 A Cordova/Phonegap plugin for Zebra bluetooth printers
+### original form https://github.com/tblanchard/zebralink
 
-##Usage
+## Install
+### Ionic2
+
+```
+ionic plugin add https://github.com/telember/zebralink.git
+``` 
+
+## Usage
 You can send data in ZPL Zebra Programing Language:
 
-###Discover Printers
-Search for Zebra bluetooth printer devices.  
+### simple
 ```
-cordova.plugins.zebralink.discover = function(
+declare var ZebraLink: any
+
+export class MyApp {
+  constructor(private platform: Platform) {
+   	this.platform.ready().then(() => {
+		if (this.platform.is('cordova')) {	
+		        let zplData = "^XA^FO20,20^A0N,25,25^FDThis is a ZPL test.^FS^XZ ";
+			ZebraLink.test(function (result) {
+        			console.log(result)
+        		}, function (err) {
+        			console.log(err)
+        		}, { address: "AC:3F:A4:5D:7B:24", message: zplData })
+		
+		}
+	})
+  }
+}
+```
+
+
+### Discover Printers
+Discover for Zebra bluetooth printer devices.  
+```
+ZebraLink.discover = function(
 	success(printers)
 	{
 		alert('Found Printers: ' + JSON.stringify(printers));
@@ -20,35 +50,30 @@ cordova.plugins.zebralink.discover = function(
 
 
 ```
-###Connect
+### Connect
 Options should contain 'printer' set to one of the printers returned from discover.
 ```
-cordova.plugins.zebralink.connect(success(){},fail(error){},options = {printer: printer});
+ZebraLink.connect(success(){},fail(error){},options = {printer: printer});
 ```
 
-###Disconnect
+### Disconnect
 Disconnect the current printer.
 ```
-cordova.plugins.zebralink.disconnect(success(){},fail(error){});
+ZebraLink.disconnect(success(){},fail(error){});
 ```
 
-###Print
+### Print
 Expects a template and optionally a formValues dictionary of values to substitute into the template. Template variables look like @variable@.
 ```
-cordova.plugins.zebralink.print(success(){},fail(error){},options{template: "^XA^FO10,10^AFN,26,13^FD@message@^FS^XZ", formValues: {message: "Hello, World!"}});
+ZebraLink.print(success(){},fail(error){},options{template: "^XA^FO10,10^AFN,26,13^FD@message@^FS^XZ", formValues: {message: "Hello, World!"}});
 ```
 
-###Swipe
+### Swipe
 Activates the printer's mag card reader until it receives a swipe or times out.  Default timeout is 20 seconds (timeout specified in ms).
 ```
-cordova.plugins.zebralink.swipe(success(){},fail(error){},options={timeout: 20000});
+ZebraLink.swipe(success(){},fail(error){},options={timeout: 20000});
 ```
-##Install
-###Cordova
 
-```
-cordova plugin add https://github.com/tblanchard/zebralink.git
-``` 
 
 
 ##ZPL - Zebra Programming Language

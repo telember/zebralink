@@ -35,7 +35,7 @@ cordova.plugins.zebralink.disconnect(success(){},fail(error){});
 ###Print
 Expects a template and optionally a formValues dictionary of values to substitute into the template. Template variables look like @variable@.
 ```
-cordova.plugins.zebralink.print(success(){},fail(error){},options{template: "^XA^FO10,10^AFN,26,13^FD@message@^FS^XZ" formValues: {message: "Hello, World!"}});
+cordova.plugins.zebralink.print(success(){},fail(error){},options{template: "^XA^FO10,10^AFN,26,13^FD@message@^FS^XZ", formValues: {message: "Hello, World!"}});
 ```
 
 ###Swipe
@@ -48,7 +48,7 @@ cordova.plugins.zebralink.swipe(success(){},fail(error){},options={timeout: 2000
 
 ```
 cordova plugin add https://github.com/tblanchard/zebralink.git
-```
+``` 
 
 
 ##ZPL - Zebra Programming Language

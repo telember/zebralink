@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 public class ZebraLink extends CordovaPlugin {
 
-	String TAG_STR = "ZebraLink";
+	String LOG_TAG = "ZebraLink";
 
 	public class ZebraLinkException extends Exception {
 		/**
@@ -90,7 +90,7 @@ public class ZebraLink extends CordovaPlugin {
 
 	@Override
 	public boolean execute(String action, JSONArray inargs, CallbackContext cid) throws JSONException {
-		Log.d(TAG_STR, "EXECUTE :" + action + "(" + cid + ")");
+		Log.d(LOG_TAG, "EXECUTE :" + action + "(" + cid + ")");
 
 		PluginResult async = new PluginResult(PluginResult.Status.NO_RESULT, "");
 		async.setKeepCallback(true);
@@ -330,7 +330,7 @@ public class ZebraLink extends CordovaPlugin {
 					ZebraLink.printerConnection.close();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					//e.printStackTrace();
+					e.printStackTrace();
 				}
 				ZebraLink.printerConnection = null;
 			}
@@ -387,7 +387,7 @@ public class ZebraLink extends CordovaPlugin {
 					Map<String, String> map = pr.getDiscoveryDataMap();
 
 					for (String settingsKey : map.keySet()) {
-						Log.d(TAG_STR, "BluetoothDiscoverer A :Key: " + settingsKey + " Value: "
+						Log.d(LOG_TAG, "BluetoothDiscoverer A :Key: " + settingsKey + " Value: "
 								+ printer.getDiscoveryDataMap().get(settingsKey));
 
 					}
@@ -398,7 +398,7 @@ public class ZebraLink extends CordovaPlugin {
 					p.put("name", name);
 					p.put("address", mac);
 					for (String settingsKey : map.keySet()) {
-						Log.d(TAG_STR, "BluetoothDiscoverer B :Key: " + settingsKey + " Value: "
+						Log.d(LOG_TAG, "BluetoothDiscoverer B :Key: " + settingsKey + " Value: "
 								+ printer.getDiscoveryDataMap().get(settingsKey));
 						p.put(settingsKey, map.get(settingsKey));
 					}
@@ -448,7 +448,7 @@ public class ZebraLink extends CordovaPlugin {
 				}
 
 				array.put(p);
-				Log.d(TAG_STR, "BluetoothDiscoverer :p : " +p.toString(2));
+				Log.d(LOG_TAG, "BluetoothDiscoverer :p : " +p.toString(2));
 				
 			}
 			//resultString = new PluginResult(PluginResult.Status.OK, array).toSuccessCallbackString(cid);
@@ -497,13 +497,13 @@ public class ZebraLink extends CordovaPlugin {
 				error.put("error", ex.getMessage());
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 			try {
 				error.put("ready", false);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 			return error;
 		}
@@ -526,15 +526,11 @@ public class ZebraLink extends CordovaPlugin {
 				}
 			}
 
-			//printerIsConnectedAndReady();
-			
 			JSONObject argDict = arguments.getJSONObject(0);
 			template = argDict.getString("template");
 			values = argDict.getJSONObject("formValues");
-
-			Log.d(TAG_STR,"template >> "+ template);
-			Log.d(TAG_STR,"values >> "+ values);
-
+			
+			Log.d(LOG_TAG,"Printer : "+ZebraLink.printerConnection );
 
 			for (Iterator<String> it = values.keys(); it.hasNext();) {
 				String k = it.next();
@@ -545,7 +541,6 @@ public class ZebraLink extends CordovaPlugin {
 			template = template.replaceAll("\n", "\r\n").replaceAll("\r\r", "\r");
 
 			synchronized (ZebraLink.lock) {
-				Log.d(TAG_STR,"ZebraLink.lock" + template);
 				ZebraLink.printerConnection.write(template.getBytes());
 			}
 			cid.success("Success");

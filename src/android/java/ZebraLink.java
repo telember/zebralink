@@ -375,34 +375,22 @@ public class ZebraLink extends CordovaPlugin {
 
 				try {
 					Map<String, String> map = pr.getDiscoveryDataMap();
-
-					for (String settingsKey : map.keySet()) {
-						Log.d(LOG_TAG, "BluetoothDiscoverer A :Key: " + settingsKey + " Value: "
-								+ printer.getDiscoveryDataMap().get(settingsKey));
-
-					}
-
 					String name = pr.friendlyName;
 					String mac = pr.address;
 					JSONObject p = new JSONObject();
 					p.put("name", name);
 					p.put("address", mac);
-					for (String settingsKey : map.keySet()) {
-						Log.d(LOG_TAG, "BluetoothDiscoverer B :Key: " + settingsKey + " Value: "
-								+ printer.getDiscoveryDataMap().get(settingsKey));
-						p.put(settingsKey, map.get(settingsKey));
-					}
 					printers.put(p);
 				} catch (Exception e) {
 				}
 			}
 		}
-		;
+		
 
 		try {
 			BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 			Set<BluetoothDevice> devices = adapter.getBondedDevices();
-			//adapter.cancelDiscovery();
+			adapter.startDiscovery();
 
 			JSONArray array = new JSONArray();
 
@@ -438,7 +426,6 @@ public class ZebraLink extends CordovaPlugin {
 				}
 
 				array.put(p);
-				Log.d(LOG_TAG, "BluetoothDiscoverer :p : " + p.toString(2));
 
 			}
 			//resultString = new PluginResult(PluginResult.Status.OK, array).toSuccessCallbackString(cid);
@@ -515,23 +502,10 @@ public class ZebraLink extends CordovaPlugin {
 					throw new ZebraLinkException("Bluetooth Not Enabled");
 				}
 			}
-
 			JSONObject argDict = arguments.getJSONObject(0);
-
-			values = argDict.getJSONObject("formValues");
-			
-			Log.d(LOG_TAG,"Printer : "+ZebraLink.printerConnection );
-
-			for (Iterator< String> it = values.keys(); it.hasNext();) {
-				String k = it.next();
-				String value = values.getString(k);
-				String token = "@" + k + "@";
-				template = template.replaceAll(token, value);
-			}
-			template = template.replaceAll("\n", "\r\n").replaceAll("\r\r", "\r");
-
+			String message = argDict.getString("message");
 			synchronized (ZebraLink.lock) {
-				ZebraLink.printerConnection.write(convertExtendedAscii(template));
+				ZebraLink.printerConnection.write(message.getBytes());
 			}
 			cid.success("Success");
 		} catch (Exception ex) {
@@ -548,8 +522,12 @@ public class ZebraLink extends CordovaPlugin {
 			BluetoothConnection myConn = new BluetoothConnectionInsecure(macAdd);
 			Log.d(LOG_TAG,"bytes "+ message.getBytes());
 			Log.d(LOG_TAG,"convert "+ convertExtendedAscii(message));
+			String s = new String(message.getBytes());
+			String s2 = new String(convertExtendedAscii(message));
+			Log.d(LOG_TAG,"ST bytes "+s);
+			Log.d(LOG_TAG,"ST bytes "+s2);
 			myConn.open();
-			myConn.write(convertExtendedAscii(message));
+			myConn.write(message.getBytes());
 			ZebraPrinter myPrinter = ZebraPrinterFactory.getInstance(myConn);
 			//myPrinter.printConfigurationLabel();
 			myConn.close();
